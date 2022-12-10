@@ -1,9 +1,16 @@
-FROM node:18-alpine AS metamath-build
+# define the metamath-base container
+FROM node:18-alpine AS metamath-base
+
+# tools used as part of the build process which may also come in handy while running
+RUN apk add curl
+RUN apk add zip
+RUN apk add git
+
+# define the metamath-build container
+FROM metamath-base AS metamath-build
 WORKDIR /build
 
 # metamath.exe: get/build dependencies
-RUN apk add curl
-RUN apk add zip
 RUN apk add clang
 RUN apk add build-base
 
@@ -15,5 +22,15 @@ RUN unzip metamath.zip -d .
 WORKDIR /build/metamath
 RUN clang *.c -o metamath
 
-# When run, launch the shell
+# define the final conatiner
+FROM metamath-base
+
+# metamath.exe: copy
+COPY --from=metamath-build /build/metamath/metamath /usr/bin/metamath
+
+# set.mm: shallow clone
+RUN git clone --depth 1 https://github.com/metamath/set.mm.git
+
+# When run, launch the shell in set.mm
+WORKDIR /set.mm
 CMD ["sh"]
