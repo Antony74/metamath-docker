@@ -34,6 +34,10 @@ RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-knife.git
 WORKDIR /build/metamath-knife
 RUN cargo build --release
 
+# mmverify.py: get
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/david-a-wheeler/mmverify.py.git
+
 # define the final conatiner
 FROM metamath-base
 
@@ -62,6 +66,10 @@ RUN npm install --global prettier-plugin-mm
 
 # set.mm: shallow clone
 RUN git clone --depth 1 https://github.com/metamath/set.mm.git
+
+# mmverify.py: add Python and copy
+RUN apk add python3
+COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 
 # When run, launch the shell in set.mm
 WORKDIR /set.mm
