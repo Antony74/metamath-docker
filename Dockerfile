@@ -38,6 +38,9 @@ RUN cargo build --release
 WORKDIR /build
 RUN git clone --depth 1 https://github.com/david-a-wheeler/mmverify.py.git
 
+# mmj2: get
+RUN git clone --depth 1 https://github.com/digama0/mmj2.git
+
 # define the final conatiner
 FROM metamath-base
 
@@ -46,6 +49,11 @@ COPY --from=metamath-build /build/metamath/metamath /usr/bin/metamath
 
 # checkmm: copy
 COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
+
+# mmj2: add JDK and copy
+RUN apk add openjdk17
+COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2 /usr/bin/mmj2
+COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2.jar /usr/bin/mmj2.jar
 
 # metamath-knife: copy
 COPY --from=metamath-build /build/metamath-knife/target/release/metamath-knife /usr/bin/metamath-knife
