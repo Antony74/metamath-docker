@@ -14,6 +14,9 @@ WORKDIR /build
 RUN apk add clang
 RUN apk add build-base
 
+# metamath-knife: dependencies for building Rust programs
+RUN apk add cargo
+
 # metamath.exe: get and build
 RUN curl https://us.metamath.org/downloads/metamath.zip -o metamath.zip
 RUN unzip metamath.zip -d .
@@ -25,6 +28,12 @@ WORKDIR /build/checkmm
 RUN curl https://us.metamath.org/downloads/checkmm.cpp -o checkmm.cpp
 RUN g++ checkmm.cpp -o checkmmc
 
+# metamath-knife: get and build
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-knife.git
+WORKDIR /build/metamath-knife
+RUN cargo build --release
+
 # define the final conatiner
 FROM metamath-base
 
@@ -33,6 +42,9 @@ COPY --from=metamath-build /build/metamath/metamath /usr/bin/metamath
 
 # checkmm: copy
 COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
+
+# metamath-knife: copy
+COPY --from=metamath-build /build/metamath-knife/target/release/metamath-knife /usr/bin/metamath-knife
 
 # checkmm-ts
 RUN npm install --global checkmm
