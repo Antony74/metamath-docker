@@ -10,17 +10,20 @@ RUN apk add git
 FROM metamath-base AS metamath-build
 WORKDIR /build
 
-# metamath.exe: get/build dependencies
+# metamath.exe and checkmm: dependencies for building C/C++ programs
 RUN apk add clang
 RUN apk add build-base
 
-# metamath.exe: get source code
+# metamath.exe: get and build
 RUN curl https://us.metamath.org/downloads/metamath.zip -o metamath.zip
 RUN unzip metamath.zip -d .
-
-# metamath.exe: native Clang build
 WORKDIR /build/metamath
 RUN clang *.c -o metamath
+
+# checkmm: get and build
+WORKDIR /build/checkmm
+RUN curl https://us.metamath.org/downloads/checkmm.cpp -o checkmm.cpp
+RUN g++ checkmm.cpp -o checkmmc
 
 # define the final conatiner
 FROM metamath-base
@@ -28,10 +31,13 @@ FROM metamath-base
 # metamath.exe: copy
 COPY --from=metamath-build /build/metamath/metamath /usr/bin/metamath
 
+# checkmm: copy
+COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
+
 # checkmm-ts
 RUN npm install --global checkmm
 
-# prettier, and prettier-plugin-mm (beta)
+# prettier-plugin-mm (beta)
 RUN npm install --global prettier
 RUN npm install --global prettier-plugin-mm
 
