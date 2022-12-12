@@ -79,6 +79,10 @@ RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 RUN apk add python3
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 
+# banner
+ENV ENV=/root/.ashrc
+RUN echo echo Metamath command line tools > /root/.ashrc
+
 # When run, launch the shell in set.mm
 WORKDIR /set.mm
 CMD ["sh"]
