@@ -13,7 +13,7 @@ console.log(
     `metamath "READ set.mm" "VERIFY PROOF *" "exit"`,
     `checkmmc set.mm`,
     `${greenBold}`,
-    `Prefix with ${noColor}time${greenBold} to measure how long it took.`,
+    `Prefix with ${noColor}time${greenBold} to measure how long a command took.`,
     `${noColor}`,
   ].join("\n")
 );

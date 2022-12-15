@@ -6,6 +6,12 @@ RUN apk add curl
 RUN apk add zip
 RUN apk add git
 
+# mmj2: add JDK
+RUN apk add openjdk17
+
+# mmverify.py: add Python
+RUN apk add python3
+
 # define the metamath-build container
 FROM metamath-base AS metamath-build
 WORKDIR /build
@@ -16,7 +22,14 @@ RUN apk add build-base
 # metamath-knife: dependencies for building Rust programs
 RUN apk add cargo
 
+# metamath-knife: get and build
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-knife.git
+WORKDIR /build/metamath-knife
+RUN cargo build --release
+
 # metamath.exe: get and build
+WORKDIR /build
 RUN curl https://us.metamath.org/downloads/metamath.zip -o metamath.zip
 RUN unzip metamath.zip -d .
 WORKDIR /build/metamath
@@ -25,13 +38,7 @@ RUN gcc m*.c -o metamath -O3 -funroll-loops -finline-functions -fomit-frame-poin
 # checkmm: get and build
 WORKDIR /build/checkmm
 RUN curl https://us.metamath.org/downloads/checkmm.cpp -o checkmm.cpp
-RUN g++ checkmm.cpp -o checkmmc
-
-# metamath-knife: get and build
-WORKDIR /build
-RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-knife.git
-WORKDIR /build/metamath-knife
-RUN cargo build --release
+RUN g++ checkmm.cpp -o checkmmc -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
 
 # mmverify.py: get
 WORKDIR /build
@@ -49,8 +56,7 @@ COPY --from=metamath-build /build/metamath/metamath /usr/bin/metamath
 # checkmm: copy
 COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
 
-# mmj2: add JDK and copy
-RUN apk add openjdk17
+# mmj2: copy
 COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2 /usr/bin/mmj2
 COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2.jar /usr/bin/mmj2.jar
 
@@ -74,8 +80,7 @@ RUN npm install --global prettier-plugin-mm
 # set.mm: shallow clone
 RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 
-# mmverify.py: add Python and copy
-RUN apk add python3
+# mmverify.py: copy
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 
 # banner
