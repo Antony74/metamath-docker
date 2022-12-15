@@ -11,7 +11,6 @@ FROM metamath-base AS metamath-build
 WORKDIR /build
 
 # metamath.exe and checkmm: dependencies for building C/C++ programs
-RUN apk add clang
 RUN apk add build-base
 
 # metamath-knife: dependencies for building Rust programs
@@ -21,7 +20,7 @@ RUN apk add cargo
 RUN curl https://us.metamath.org/downloads/metamath.zip -o metamath.zip
 RUN unzip metamath.zip -d .
 WORKDIR /build/metamath
-RUN clang *.c -o metamath
+RUN gcc m*.c -o metamath -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
 
 # checkmm: get and build
 WORKDIR /build/checkmm
@@ -81,7 +80,8 @@ COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 
 # banner
 ENV ENV=/root/.ashrc
-RUN echo echo Metamath command line tools > /root/.ashrc
+COPY ./banner.js /root/banner.js
+RUN echo node /root/banner.js > /root/.ashrc
 
 # When run, launch the shell in set.mm
 WORKDIR /set.mm
