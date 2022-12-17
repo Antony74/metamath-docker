@@ -71,13 +71,14 @@ RUN npm install --global prettier
 RUN npm install --global prettier-plugin-mm
 
 # alt-mm (beta)
-# WORKDIR /git
-# RUN git clone --depth 1 --no-single-branch https://github.com/Antony74/alt-mm
-# WORKDIR /git/alt-mm
-# RUN npm install
-# RUN npm install --global .
+WORKDIR /git
+RUN git clone --depth 1 --no-single-branch https://github.com/Antony74/alt-mm
+WORKDIR /git/alt-mm
+RUN npm install
+RUN npm install --global .
 
 # set.mm: shallow clone
+WORKDIR /
 RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 
 # mmverify.py: copy
