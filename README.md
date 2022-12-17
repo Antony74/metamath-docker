@@ -1,4 +1,4 @@
-# metamath-docker
+# Metamath command line tools in Docker
 
-    docker build -t metamath .
-    docker run -it metamath
+    docker build -t metamath-cmds .
+    docker run -it metamath-cmds
