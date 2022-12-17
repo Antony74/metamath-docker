@@ -74,7 +74,7 @@ RUN npm install --global prettier-plugin-mm
 WORKDIR /git
 RUN git clone --depth 1 --no-single-branch https://github.com/Antony74/alt-mm
 WORKDIR /git/alt-mm
-RUN npm install
+RUN npm install --omit=dev
 RUN npm install --global .
 
 # set.mm: shallow clone
