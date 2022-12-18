@@ -6,8 +6,8 @@ RUN apk add curl
 RUN apk add zip
 RUN apk add git
 
-# mmj2: add JDK
-RUN apk add openjdk17
+# mmj2: add JRE
+RUN apk add openjdk17-jre
 
 # mmverify.py: add Python
 RUN apk add python3
