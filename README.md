@@ -14,9 +14,17 @@ And a few of my own:
 * [prettier-plugin-mm (beta)](https://github.com/Antony74/prettier-plugin-mm)
 * [alt-mm (beta)](https://github.com/Antony74/alt-mm)
 
-# Getting started
+## Getting started
 
     git clone https://github.com/Antony74/metamath-docker.git
     cd metamath-docker
     docker build -t akb74/metamath-cmds .
     docker run -it akb74/metamath-cmds
+
+## Dockerhub
+
+The [dockerhub image](https://hub.docker.com/repository/docker/akb74/metamath-cmds/general) will usually be out of date, but the run command
+
+    docker run -it akb74/metamath-cmds
+
+will pull from dockerhub if you don't have a local build.
