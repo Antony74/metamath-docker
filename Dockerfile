@@ -83,8 +83,16 @@ RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 
 # metamath-test: shallow clone
 RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-test.git
+WORKDIR /metamath-test
+COPY metamath-test/DRIVERS DRIVERS
+COPY metamath-test/test-checkmm test-checkmm
+COPY metamath-test/test-metamath test-metamath
+COPY metamath-test/test-mmj2 test-mmj2
+COPY metamath-test/test-mmverifypy test-mmverifypy
+COPY metamath-test/test-smetamath test-smetamath
 
 # mmverify.py: copy
+WORKDIR /
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 
 # banner

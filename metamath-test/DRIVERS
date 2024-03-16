@@ -1,0 +1,7 @@
+./test-metamath
+./test-hmmverify
+./test-smetamath
+./test-checkmm
+./test-mmj2
+# This is slow, so do this later.  Note that it requires python3:
+./test-mmverifypy

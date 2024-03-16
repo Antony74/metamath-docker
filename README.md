@@ -7,6 +7,7 @@ A docker image containing the [set.mm](https://github.com/metamath/set.mm) repos
 * [metamath-knife](https://github.com/david-a-wheeler/metamath-knife)
 * [mmj2](https://github.com/digama0/mmj2)
 * [mmverify.py](https://github.com/david-a-wheeler/mmverify.py)
+* [metamath-test](https://github.com/david-a-wheeler/metamath-test)
 
 And a few of my own:
 
