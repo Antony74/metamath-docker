@@ -2,25 +2,25 @@
 FROM node:20-alpine AS metamath-base
 
 # tools used as part of the build process which may also come in handy while running
-RUN apk add curl
-RUN apk add zip
-RUN apk add git
+RUN apk add --no-cache curl
+RUN apk add --no-cache zip
+RUN apk add --no-cache git
 
 # mmj2: add JRE
-RUN apk add openjdk17-jre
+RUN apk add --no-cache openjdk17-jre
 
 # mmverify.py: add Python
-RUN apk add python3
+RUN apk add --no-cache python3
 
 # define the metamath-build container
 FROM metamath-base AS metamath-build
 WORKDIR /build
 
 # metamath.exe and checkmm: dependencies for building C/C++ programs
-RUN apk add build-base
+RUN apk add --no-cache build-base
 
 # metamath-knife: dependencies for building Rust programs
-RUN apk add cargo
+RUN apk add --no-cache cargo
 
 # metamath-knife: get and build
 WORKDIR /build
@@ -86,10 +86,11 @@ RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-test.git
 WORKDIR /metamath-test
 COPY metamath-test/DRIVERS DRIVERS
 COPY metamath-test/test-checkmm test-checkmm
+COPY metamath-test/test-checkmm-ts test-checkmm-ts
 COPY metamath-test/test-metamath test-metamath
 COPY metamath-test/test-mmj2 test-mmj2
 COPY metamath-test/test-mmverifypy test-mmverifypy
-COPY metamath-test/test-smetamath test-smetamath
+COPY metamath-test/test-metamath-knife test-metamath-knife
 
 # mmverify.py: copy
 WORKDIR /

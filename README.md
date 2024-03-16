@@ -22,7 +22,7 @@ And a few of my own:
     docker build -t akb74/metamath-cmds .
     docker run -it akb74/metamath-cmds
 
-## Dockerhub
+## Getting started with dockerhub
 
 The [dockerhub image](https://hub.docker.com/repository/docker/akb74/metamath-cmds/general) will usually be out of date, but the run command
 

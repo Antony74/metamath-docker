@@ -1,5 +1,5 @@
-const greenBold = "\033[1;92m";
-const noColor = "\033[0m";
+const greenBold = "\x1b[1;92m";
+const noColor = "\x1b[0m";
 
 console.log(
   [
@@ -12,12 +12,13 @@ console.log(
     `${noColor}`,
     `metamath "READ set.mm" "VERIFY PROOF *" "exit"`,
     `checkmmc set.mm`,
-    `metamath-knife set.mm`,
+    `metamath-knife --verify set.mm`,
     `echo -e "LoadFile,set.mm\\nVerifyProof,*" > params.txt && mmj2 -f params.txt`,
     `python3 mmverify.py set.mm`,
     `checkmm set.mm`,
     `prettier --write demo0.mm`,
     `alt-mm set.mm`,
+    `cd /metamath-test && ./run-testsuite-all-drivers`,
     `${greenBold}`,
     `Prefix with ${noColor}time${greenBold} to measure how long a command took.`,
     `${noColor}`,
