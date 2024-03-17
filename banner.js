@@ -21,6 +21,7 @@ console.log(
     `cd /metamath-test && ./run-testsuite-all-drivers`,
     `${greenBold}`,
     `Prefix with ${noColor}time${greenBold} to measure how long a command took.`,
+    `Put command in quotes and prefix with ${noColor}hyperfine -w 2 --${greenBold} to benchmark how long it takes.`,
     `${noColor}`,
   ].join("\n")
 );

@@ -1,10 +1,11 @@
 # define the metamath-base container
 FROM node:20-alpine AS metamath-base
 
-# tools used as part of the build process which may also come in handy while running
+# tools used as part of the build process and/or which may also come in handy while running
 RUN apk add --no-cache curl
 RUN apk add --no-cache zip
 RUN apk add --no-cache git
+RUN apk add --no-cache hyperfine
 
 # mmj2: add JRE
 RUN apk add --no-cache openjdk17-jre
