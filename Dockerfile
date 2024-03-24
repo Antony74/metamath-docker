@@ -97,16 +97,17 @@ RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 # metamath-test: shallow clone
 RUN git clone --depth 1 https://github.com/Antony74/metamath-test.git -b antony74-working
 WORKDIR /metamath-test
-COPY metamath-test/DRIVERS DRIVERS
 COPY metamath-test/test-checkmm test-checkmm
 COPY metamath-test/test-checkmm-ts test-checkmm-ts
 COPY metamath-test/test-metamath test-metamath
 COPY metamath-test/test-mmj2 test-mmj2
 COPY metamath-test/test-mmverifypy test-mmverifypy
-COPY metamath-test/test-metamath-knife test-metamath-knife
+
+COPY metamath-test/metamath-knife /root/.cargo/bin/metamath-knife
+RUN chmod +x /root/.cargo/bin/metamath-knife
 
 # Comment hmm from metamath-test DRIVERS file
-RUN sed -i 's/.\/test-hmmverify/# .\.test-hmmverify/g' DRIVERS
+RUN sed -i 's/.\/test-hmmverify/# .\/test-hmmverify/g' DRIVERS
 
 # mmverify.py: copy
 WORKDIR /

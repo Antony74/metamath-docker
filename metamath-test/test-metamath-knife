@@ -1,3 +1,0 @@
-#!/bin/sh
-
-metamath-knife --verify "$1" 2>&1 | tee smm.log && [ `egrep -q 'error' < smm.log; echo $?` -eq 1 ]
