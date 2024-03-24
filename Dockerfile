@@ -69,10 +69,6 @@ COPY --from=metamath-build /build/metamath/src/metamath /usr/bin/metamath
 # checkmm: copy
 COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
 
-# mmj2: copy
-COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2 /usr/bin/mmj2
-COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2.jar /usr/bin/mmj2.jar
-
 # metamath-knife: copy
 COPY --from=metamath-build /build/metamath-knife/target/release/metamath-knife /usr/bin/metamath-knife
 
@@ -97,21 +93,28 @@ RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 # metamath-test: shallow clone
 RUN git clone --depth 1 https://github.com/Antony74/metamath-test.git -b antony74-working
 WORKDIR /metamath-test
-COPY metamath-test/test-checkmm test-checkmm
-COPY metamath-test/test-checkmm-ts test-checkmm-ts
 COPY metamath-test/test-metamath test-metamath
-COPY metamath-test/test-mmj2 test-mmj2
-COPY metamath-test/test-mmverifypy test-mmverifypy
+
+# metamath-test: satisfy its expectations about where to find things
 
 COPY metamath-test/metamath-knife /root/.cargo/bin/metamath-knife
 RUN chmod +x /root/.cargo/bin/metamath-knife
 
+COPY metamath-test/checkmm checkmm
+RUN chmod +x checkmm
+
 # Comment hmm from metamath-test DRIVERS file
 RUN sed -i 's/.\/test-hmmverify/# .\/test-hmmverify/g' DRIVERS
+
+# mmj2: copy
+COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2 /usr/bin/mmj2
+COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2.jar /usr/bin/mmj2.jar
+COPY --from=metamath-build /build/mmj2/mmj2jar/mmj2.jar /metamath-test/mmj2.jar
 
 # mmverify.py: copy
 WORKDIR /
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
+COPY --from=metamath-build /build/mmverify.py/mmverify.py /metamath-test/mmverify.py
 
 # banner
 ENV ENV=/root/.ashrc

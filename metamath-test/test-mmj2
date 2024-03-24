@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Not all .mm files follow the conventions of set.mm, so we will
-# only verify proofs.
-# printf "LoadFile,${1}\nVerifyProof,*\nParse,*\n" > RunParmsMod.txt
-printf "LoadFile,${1}\nVerifyProof,*\n" > RunParmsMod.txt
-
-mmj2 -f RunParmsMod.txt 2>&1 | tee mmj2.log && [ `egrep -q 'Exception|[WEA]-..-[0-9]{4}' < mmj2.log; echo $?` -eq 1 ]
