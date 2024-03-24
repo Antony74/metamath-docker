@@ -17,11 +17,14 @@ RUN apk add --no-cache python3
 FROM metamath-base AS metamath-build
 WORKDIR /build
 
-# metamath.exe and checkmm: dependencies for building C/C++ programs
+# metamath.exe, checkmm, hmm: dependencies for building C/C++ and Haskell programs
 RUN apk add --no-cache build-base
 
 # metamath-knife: dependencies for building Rust programs
 RUN apk add --no-cache cargo
+
+# hmm: dependencies for building Haskell programs
+RUN apk add --no-cache ghc
 
 # metamath-knife: get and build
 WORKDIR /build
@@ -47,6 +50,15 @@ RUN git clone --depth 1 https://github.com/david-a-wheeler/mmverify.py.git
 
 # mmj2: get
 RUN git clone --depth 1 https://github.com/digama0/mmj2.git
+
+# hmm: get and build
+WORKDIR /build
+RUN curl https://us.metamath.org/downloads/hmm.zip -o hmm.zip
+RUN unzip hmm.zip -d .
+WORKDIR /build/hmm
+COPY hmm/Makefile Makefile
+COPY hmm/Hmm.hs Hmm.hs
+RUN make
 
 # define the final conatiner
 FROM metamath-base
@@ -93,6 +105,9 @@ COPY metamath-test/test-mmj2 test-mmj2
 COPY metamath-test/test-mmverifypy test-mmverifypy
 COPY metamath-test/test-metamath-knife test-metamath-knife
 
+# Comment hmm from metamath-test DRIVERS file
+RUN sed -i 's/.\/test-hmmverify/# .\.test-hmmverify/g' DRIVERS
+
 # mmverify.py: copy
 WORKDIR /
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
@@ -101,6 +116,12 @@ COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 ENV ENV=/root/.ashrc
 COPY ./banner.js /root/banner.js
 RUN echo node /root/banner.js > /root/.ashrc
+
+# hmm: copy
+COPY --from=metamath-build /build/hmm/hmmverify /usr/bin/hmmverify
+COPY --from=metamath-build /build/hmm/hmmprint /usr/bin/hmmprint
+COPY --from=metamath-build /build/hmm/hmmextract /usr/bin/hmmextract
+COPY --from=metamath-build /usr/lib/libgmp.so.10 /usr/lib/libgmp.so.10
 
 # When run, launch the shell in set.mm
 WORKDIR /set.mm

@@ -15,6 +15,7 @@ console.log(
     `metamath-knife --verify set.mm`,
     `echo -e "LoadFile,set.mm\\nVerifyProof,*" > params.txt && mmj2 -f params.txt`,
     `python3 mmverify.py set.mm`,
+    `hmmverify < demo0.mm`,
     `checkmm set.mm`,
     `prettier --write demo0.mm`,
     `alt-mm set.mm`,
