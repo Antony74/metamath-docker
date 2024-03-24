@@ -1,0 +1,10 @@
+#!/bin/sh
+
+while read cmd; do
+  hyperfine -w 2 -- "$cmd"
+  result="$?"
+  if [ "$result" != 0 ] ; then
+    exit "$result"
+  fi
+  echo
+done <verifier-commands
