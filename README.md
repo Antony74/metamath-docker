@@ -8,6 +8,7 @@ A docker image containing the [set.mm](https://github.com/metamath/set.mm) repos
 * [mmj2](https://github.com/digama0/mmj2)
 * [mmverify.py](https://github.com/david-a-wheeler/mmverify.py)
 * [metamath-test](https://github.com/david-a-wheeler/metamath-test)
+* [hmm - Haskell Metamath verifier](http://home.solcon.nl/mklooster/repos/hmm/)
 
 And a few of my own:
 
