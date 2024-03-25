@@ -91,7 +91,7 @@ WORKDIR /
 RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 
 # metamath-test: shallow clone
-RUN git clone --depth 1 https://github.com/Antony74/metamath-test.git -b antony74-working
+RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-test.git
 WORKDIR /metamath-test
 COPY metamath-test/test-metamath test-metamath
 
