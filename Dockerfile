@@ -41,8 +41,10 @@ RUN gcc m*.c -o metamath -O3 -funroll-loops -finline-functions -fomit-frame-poin
 
 # checkmm: get and build
 WORKDIR /build/checkmm
-RUN curl https://raw.githubusercontent.com/Antony74/checkmm-ts/main/cpp/checkmm.cpp -o checkmm.cpp
-RUN g++ checkmm.cpp -o checkmmc -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
+RUN curl https://us.metamath.org/downloads/checkmm.cpp -o checkmm.cpp
+RUN g++ checkmm.cpp -o checkmm_erase -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
+RUN sed -i 's/stack->erase(stack->begin() + base, stack->end());/stack->resize(base);/g' checkmm.cpp
+RUN g++ checkmm.cpp -o checkmm_resize -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
 
 # mmverify.py: get
 WORKDIR /build
@@ -67,7 +69,8 @@ FROM metamath-base
 COPY --from=metamath-build /build/metamath/src/metamath /usr/bin/metamath
 
 # checkmm: copy
-COPY --from=metamath-build /build/checkmm/checkmmc /usr/bin/checkmmc
+COPY --from=metamath-build /build/checkmm/checkmm_erase /usr/bin/checkmmc_erase
+COPY --from=metamath-build /build/checkmm/checkmm_resize /usr/bin/checkmmc_resize
 
 # metamath-knife: copy
 COPY --from=metamath-build /build/metamath-knife/target/release/metamath-knife /usr/bin/metamath-knife

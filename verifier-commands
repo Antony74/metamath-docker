@@ -1,5 +1,2 @@
-metamath-knife --verify set.mm
-echo -e "LoadFile,set.mm\\nVerifyProof,*" > params.txt && mmj2 -f params.txt
-metamath "READ set.mm" "VERIFY PROOF *" "exit"
-checkmmc set.mm
-python3 mmverify.py set.mm
+checkmmc_erase set.mm
+checkmmc_resize set.mm
