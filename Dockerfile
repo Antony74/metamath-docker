@@ -1,5 +1,5 @@
 # define the metamath-base container
-FROM node:20-alpine AS metamath-base
+FROM node:22-alpine AS metamath-base
 
 # tools used as part of the build process and/or which may also come in handy while running
 RUN apk add --no-cache curl
@@ -60,7 +60,7 @@ COPY hmm/Makefile Makefile
 COPY hmm/Hmm.hs Hmm.hs
 RUN make
 
-# define the final conatiner
+# define the final container
 FROM metamath-base
 
 # metamath.exe: copy
