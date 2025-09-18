@@ -19,7 +19,6 @@ const main = async () => {
       `${noColor}`,
       verifierCommands.trim(),
       `hmmverify < demo0.mm`,
-      `checkmm set.mm`,
       `prettier --write demo0.mm`,
       `alt-mm set.mm`,
       `./benchmark-all`,
