@@ -94,6 +94,7 @@ RUN git clone --depth 1 https://github.com/metamath/set.mm.git
 RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-test.git
 WORKDIR /metamath-test
 COPY metamath-test/test-metamath test-metamath
+RUN chmod +x test-metamath
 
 # metamath-test: satisfy its expectations about where to find things
 
