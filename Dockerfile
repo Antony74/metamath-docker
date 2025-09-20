@@ -120,9 +120,11 @@ COPY --from=metamath-build /build/mmverify.py/mmverify.py /metamath-test/mmverif
 # banner, verifier-commands, and benchmark-all
 ENV ENV=/root/.ashrc
 COPY verifier-commands /set.mm/verifier-commands
-COPY benchmark-all /set.mm/benchmark-all
 COPY banner.js /set.mm/banner.js
 RUN echo node /set.mm/banner.js > /root/.ashrc
+
+COPY benchmark-all /set.mm/benchmark-all
+RUN chmod +x /set.mm/benchmark-all
 
 # hmm: copy
 COPY --from=metamath-build /build/hmm/hmmverify /usr/bin/hmmverify
