@@ -31,11 +31,13 @@ The [dockerhub image](https://hub.docker.com/repository/docker/akb74/metamath-cm
 
 will pull from dockerhub if you don't have a local build.
 
-## Useful parameters
+## Useful commands
 
 `docker build` with `--no-cache` to build from scratch in order to pick up the latests downloads
 
 `docker run` with `--privileged` if you want to use `perf` (not actually currently installed)
+
+`docker inspect -f "{{.Size}}" akb74/metamath-cmds` size of container in bytes
 
 ## perf
 
