@@ -1,36 +1,43 @@
 # define the metamath-base container
-FROM node:22-alpine AS metamath-base
+FROM ubuntu:24.04 AS metamath-base
+RUN apt-get update
 
-# tools used as part of the build process and/or which may also come in handy while running
-RUN apk add --no-cache curl
-RUN apk add --no-cache zip
-RUN apk add --no-cache git
-RUN apk add --no-cache hyperfine
+# tools used as part of the build process and/or which may also come in handy while
+# running or monitoring our metamath commands
+RUN apt-get install -y bash
+RUN apt-get install -y curl
+RUN apt-get install -y zip
+RUN apt-get install -y git
+RUN apt-get install -y hyperfine
+
+# checkmm-ts: install node
+RUN apt-get install -y nodejs
+RUN apt-get install -y npm
 
 # mmj2: add JRE
-RUN apk add --no-cache openjdk17-jre
+RUN apt-get install -y openjdk-17-jre
 
 # mmverify.py: add Python
-RUN apk add --no-cache python3
+RUN apt-get install -y python3
 
 # define the metamath-build container
 FROM metamath-base AS metamath-build
 WORKDIR /build
 
 # metamath.exe, checkmm, hmm: dependencies for building C/C++ and Haskell programs
-RUN apk add --no-cache build-base
-
-# metamath-knife: dependencies for building Rust programs
-RUN apk add --no-cache cargo
+RUN apt-get install -y build-essential
 
 # hmm: dependencies for building Haskell programs
-RUN apk add --no-cache ghc
+RUN apt-get install -y ghc
+
+# metamath-knife: dependencies for building Rust programs
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 # metamath-knife: get and build
 WORKDIR /build
 RUN git clone --depth 1 https://github.com/david-a-wheeler/metamath-knife.git
 WORKDIR /build/metamath-knife
-RUN cargo build --release
+RUN PATH="$HOME/.cargo/bin:$PATH" cargo build --release
 
 # metamath.exe: get and build
 WORKDIR /build
@@ -39,16 +46,12 @@ RUN unzip metamath.zip -d .
 WORKDIR /build/metamath/src
 RUN gcc m*.c -o metamath -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
 
-# checkmm: get and build
-WORKDIR /build/checkmm
-RUN curl https://raw.githubusercontent.com/Antony74/checkmm-ts/main/cpp/checkmm.cpp -o checkmm.cpp
-RUN g++ checkmm.cpp -o checkmmc -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic
-
 # mmverify.py: get
 WORKDIR /build
 RUN git clone --depth 1 https://github.com/david-a-wheeler/mmverify.py.git
 
 # mmj2: get
+WORKDIR /build
 RUN git clone --depth 1 https://github.com/digama0/mmj2.git
 
 # hmm: get and build
@@ -59,6 +62,11 @@ WORKDIR /build/hmm
 COPY hmm/Makefile Makefile
 COPY hmm/Hmm.hs Hmm.hs
 RUN make
+
+# checkmm: get and build
+WORKDIR /build/checkmm
+COPY checkmm.cpp checkmm.cpp
+RUN g++ checkmm.cpp -o checkmmc -O3 -funroll-loops -finline-functions -fomit-frame-pointer -Wall -pedantic -static -flto
 
 # define the final container
 FROM metamath-base
@@ -118,10 +126,10 @@ COPY --from=metamath-build /build/mmverify.py/mmverify.py /set.mm/mmverify.py
 COPY --from=metamath-build /build/mmverify.py/mmverify.py /metamath-test/mmverify.py
 
 # banner, verifier-commands, and benchmark-all
-ENV ENV=/root/.ashrc
+ENV ENV=/root/.bashrc
 COPY verifier-commands /set.mm/verifier-commands
 COPY banner.js /set.mm/banner.js
-RUN echo node /set.mm/banner.js > /root/.ashrc
+RUN echo node /set.mm/banner.js > /root/.bashrc
 
 COPY benchmark-all /set.mm/benchmark-all
 RUN chmod +x /set.mm/benchmark-all
@@ -130,8 +138,7 @@ RUN chmod +x /set.mm/benchmark-all
 COPY --from=metamath-build /build/hmm/hmmverify /usr/bin/hmmverify
 COPY --from=metamath-build /build/hmm/hmmprint /usr/bin/hmmprint
 COPY --from=metamath-build /build/hmm/hmmextract /usr/bin/hmmextract
-COPY --from=metamath-build /usr/lib/libgmp.so.10 /usr/lib/libgmp.so.10
 
 # When run, launch the shell in set.mm
 WORKDIR /set.mm
-CMD ["sh"]
+CMD ["bash"]

@@ -10,5 +10,10 @@
         "Metamath",
         "mmverify",
         "mmverifypy"
-    ]
+    ],
+    "files.associations": {
+        "vector": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp"
+    }
 }
