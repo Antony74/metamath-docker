@@ -225,7 +225,7 @@ std::string nexttoken(std::istream & input)
 
 bool readtokens(std::string const filename)
 {
-    static std::unordered_set<std::string> names;
+    static std::set<std::string> names;
 
     bool const alreadyencountered(!names.insert(filename).second);
     if (alreadyencountered)
@@ -237,8 +237,6 @@ bool readtokens(std::string const filename)
         std::cerr << "Could not open " << filename << std::endl;
         return false;
     }
-
-    in.rdbuf()->pubsetbuf(nullptr, 1 << 20); // use 1 MB buffer
 
     bool incomment(false);
     bool infileinclusion(false);
@@ -347,7 +345,7 @@ Assertion & constructassertion(std::string const label, Expression const & exp)
 
     assertion.expression = exp;
 
-    std::unordered_set<std::string> varsused;
+    std::set<std::string> varsused;
 
     // Determine variables used and find mandatory hypotheses
 
@@ -489,8 +487,8 @@ void makesubstitution
         else
         {
             // Variable
-            const Expression& expression = iter2->second;
-            destination->insert(destination->end(), expression.begin(), expression.end());
+            std::copy(iter2->second.begin(), iter2->second.end(),
+                      std::back_inserter(*destination));
         }
     }
 }
@@ -597,7 +595,6 @@ bool verifyassertionref(std::string thlabel, std::string reflabel,
                 (std::make_pair(hypothesis.first[1],
                  Expression())).first->second);
             Expression & substee = (*stack)[base + i];
-            subst.reserve(subst.size() + (substee.size() - 1));
             subst.insert(subst.end(), substee.begin() + 1, substee.end());
         }
         else
