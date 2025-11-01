@@ -3,18 +3,13 @@
 A docker image containing the [set.mm](https://github.com/metamath/set.mm) repository and the following command line tools for Metamath:
 
 * [metamath.exe](https://us.metamath.org/index.html#mmprog)
-* [checkmm](https://us.metamath.org/other.html#checkmm)
 * [metamath-knife](https://github.com/david-a-wheeler/metamath-knife)
 * [mmj2](https://github.com/digama0/mmj2)
+* [checkmm](https://us.metamath.org/other.html#checkmm)
+* [checkmm-ts](https://github.com/Antony74/checkmm-ts)
 * [mmverify.py](https://github.com/david-a-wheeler/mmverify.py)
 * [metamath-test](https://github.com/david-a-wheeler/metamath-test)
 * [hmm - Haskell Metamath verifier](http://home.solcon.nl/mklooster/repos/hmm/)
-
-And a few of my own:
-
-* [checkmm-ts](https://github.com/Antony74/checkmm-ts)
-* [prettier-plugin-mm (beta)](https://github.com/Antony74/prettier-plugin-mm)
-* [alt-mm (beta)](https://github.com/Antony74/alt-mm)
 
 ## Getting started
 
