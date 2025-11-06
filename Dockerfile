@@ -7,12 +7,16 @@ RUN apt-get update
 RUN apt-get install -y bash
 RUN apt-get install -y curl
 RUN apt-get install -y zip
-RUN apt-get install -y git
 RUN apt-get install -y hyperfine
+RUN apt-get install -y vim
+# add a later version of git than currently available in ubuntu
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:git-core/ppa
+RUN apt-get install -y git
 
-# checkmm-ts: install node
+# checkmm-ts: install node (a later version than currently available in ubuntu)
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
 RUN apt-get install -y nodejs
-RUN apt-get install -y npm
 
 # mmj2: add JRE
 RUN apt-get install -y openjdk-17-jre
@@ -138,6 +142,15 @@ RUN chmod +x /set.mm/benchmark-all
 COPY --from=metamath-build /build/hmm/hmmverify /usr/bin/hmmverify
 COPY --from=metamath-build /build/hmm/hmmprint /usr/bin/hmmprint
 COPY --from=metamath-build /build/hmm/hmmextract /usr/bin/hmmextract
+
+# install yamma-unifier
+WORKDIR /build
+RUN git clone --depth 1 https://github.com/Antony74/yamma-unifier.git
+WORKDIR /build/yamma-unifier
+RUN git submodule update --init
+RUN npm install
+RUN npm run build
+RUN npm install --global .
 
 # When run, launch the shell in set.mm
 WORKDIR /set.mm
